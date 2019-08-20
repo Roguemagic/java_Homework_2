@@ -1,0 +1,133 @@
+Why should you have minimum scope for variables?
+A：不同于创建对象，在声明一个变量时，通常的原则是尽可能地缩小变量的范围，只在需要的时候
+声明变量。变量出现的代码区域越小，声明越接近初始化，就越容易阅读和理解变量的使用方式和来源。
+局部变量多余的声明范围会一方面会产生计算耗费，同时会导致命名空间混乱。、
+
+Why should you understand performance of String Concatenation?
+A：java中存在非常多的方法用于字符串连接，需要从性能、可读性、空安全性以及对于非字符串对象
+的友好性多个方面来比较不同的方法，了解使用场景。
+可读性：浏览代码并快速识别正在构建的内容。
+
+性能：通过直接连接构建几个字符串，或者快速地在一个循环中连接许多字符串。
+
+空安全：如果在任何地方都检查空值，很容易导致错误。
+
+连接对象：在大多数情况下，将对象序列化为字符串，应该自动对每个对象调用ToString()方法。
+PS：尽量避免使用string.format()。
+常见的串连接方法：
++ operator
+StringBuilder
+StringBuffer
+String.concat()
+String.format()
+Streams
+String.join()
+Apache Commons’ StringUtils
+Google Guava’s Joiner
+举个栗子：从可读性上说：StringBuilder、StringBuffer和String.Concat都非常冗长，因此很难读取；
+它们中的每一个都有一个方法名来分隔每个子字符串，因此即使将子字符串逐行分解，也很难看到。
++ operator，string.join()、apache commons的stringuutils和google guava的joiner都非常容易读取，
+因为只有逗号分隔子字符串。
+string.format（）可以很容易地确定整体呈现的字符串应该是什么样的，因为它都是一个连续的字符串，
+带有用于注入变量的占位符。但是，对于每个附加变量，要确定变量和占位符的排列方式确实变得困难。
+
+What are the best practices with Exception Handling?
+A:
+1.Never swallow the exception in catch block
+完全吞没了异常，永远失去了错误的原因
+2.Declare the specific checked exceptions that your method can throw
+根据方法中会抛出的异常，声明特定的异常检测
+3.Do not catch the Exception class rather catch specific sub classes
+catch特定的子类。
+4.Never catch Throwable class
+Java错误也是可抛出的子类。
+5.Always correctly wrap the exceptions in custom exceptions so that stack trace is not lost
+避免破坏异常的stack trace
+6.Either log the exception or throw it but never do the both
+不能同时执行记录异常和抛出异常两个操作。
+7.Never throw any exception from finally block
+8.Always catch only those exceptions that you can actually handle
+仅当希望处理任何异常时捕获它
+9. Don’t use printStackTrace() statement or similar methods
+printstacktrace()语句或类似方法不会附加任何上下文信息
+10.Use finally blocks instead of catch blocks if you are not going to handle exception
+11.Remember “Throw early catch late” principle
+尽快抛出一个异常，并尽可能晚地捕获它。你应该等到你掌握了所有的信息才能正确地处理它。
+12.Always clean up after handling the exception
+处理异常后，确保清除资源
+13.Throw only relevant exception from a method
+保证程序的相关性，保持代码整洁
+14.Never use exceptions for flow control in your program
+不要尝试对应用逻辑使用异常处理。
+15.Validate user input to catch adverse conditions very early in request processing
+在非常早期的阶段验证用户输入以最小化核心应用逻辑中的异常处理代码。
+16.Always include all information about an exception in single log message
+始终使用单个日志消息
+17.Pass all relevant information to exceptions to make them informative as much as possible
+将所有的相关信息传递给异常
+18.Always terminate the thread which it is interrupted
+InterruptedException提示时，应该停止正在做的任何事情。
+19. Use template methods for repeated try-catch
+对于重复出现的重复catch块使用模板方法。
+20.Document all exceptions in the application with javadoc
+
+When is it recommended to prefer Unchecked Exceptions?
+A:首先：
+选中的异常应用于可预测但无法预防的合理错误。
+未选中的异常应用于其他所有项。
+如果抛出的异常时可预测、但无法预防的，并且可以从中恢复，那么可以选择抛出一个选中异常。反之，
+则应将异常包装在未选中的异常中。
+
+When do you use a Marker Interface?
+A：在以前的java中，标记接口是声明一个类的元数据的唯一方法。现在往往都使用注释来替代标记接口的
+功能，标记注释使得元数据的声明更加灵活。但标记接口相比于比较注释仍有一些优点(Joshua Bloch):
+标记接口定义了一个由被标记类的实例实现的类型；而标记注释则没有。
+标记接口允许你在编译时捕获使用注释标记时直到运行时才能捕获的错误。
+
+Why are ENUMS important for Readable Code?
+A：当使用enum时，会增加编译时的检查，可以避免传入无效的常量，并记录哪些值是合法的。
+适用性：当变量尤其是方法参数只能从以小组可能的值中取时，总是应该使用枚举。但是，过度使用枚举
+往往意味着方法过多。
+使用enums将“真正”的值包裹起来，使我们不需要关系具体的值而只需要根据名字了解它的意义，提高了代码
+的可读性。
+
+Why should you minimize mutability?
+A：直接说不可变对象和类的优点：
+不可变类优点:易于设计、实现和使用
+;不易出错，更安全
+不可变对象优点：不可变对象是线程安全的，因为该对象的状态永远不会更改，所以当不同的进程/线程尝试读取时，
+该对象将始终得到相同的结果。因此，它使并发编程变得更干净、更容易编写。
+不可变对象缺点：每次想要修改一个对象，必须创建一个新的。可能导致在创建大量大型对象时出现内存不足问题。
+此外，对于具有独特的对象，更改现有对象比创建新的、修改过的对象副本更简单直观。
+因此，在大多的情况下，尽量减少易变性是很重要的，但是在一些特定情况下我们仍需要使用可变对象：
+例如，在游戏中，考虑到运行速度的重要性，用可变对象表示游戏角色往往会使游戏运行速度明显快于另一种实现，
+即每发生一个小的变化就生成一个新的游戏角色副本。
+
+What is functional programming?
+A：函数式编程（FP）：通过将计算机运算视为纯函数运算、避免共享状态，可变数据以及副作用的一种编程范式。
+相比于面向对象编程，函数式编程的应用程序状态通常与对象中的方法共享并置。
+这种代码往往比其他的代码更加简洁、可预测以及更好测试。
+
+
+Why should you prefer Builder Pattern to build complex objects?
+A：生成器模式这种设计模式的目的在于将复杂对象的构造和表现分离，以便相同的构造过程可以创建不同的表示。
+在构建复杂对象时具有如下优点
+将对象的构造过程封装在具体生成器中，使用不同生成器就可以得到对象的不同表示；
+构造过程的分离使我们无需了解对象的具体组件；
+可以更精细的控制对象的构造过程；
+对象的构造过程与创建对象类分离，对象创建更加灵活；
+生成器模式满足开-闭原则。
+
+Why should you avoid floats for Calculations?
+A：对于floats和double，最大的问题是计算（如货币计算）的数字绝大多数是没有办法精确的用整数乘以2的幂次来
+表示的，因此往往会产生微小的错误，当这种不精确的数字反复执行加减乘除时，错误将会叠加产生一个明显不准确
+的值。解决方案是使用整数。
+
+Why should you build the riskiest high priority features first?
+A：
+
+
+
+
+
+
